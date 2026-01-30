@@ -1,23 +1,19 @@
+using InteractionSystem.Runtime.Core;
 using UnityEngine;
 
-namespace InteractionSystem.Runtime.Core
+public abstract class InteractableBase : MonoBehaviour, IInteractable
 {
-    public abstract class InteractableBase : MonoBehaviour, IInteractable
+    // CHANGED: 'private' -> 'protected'
+    [SerializeField] protected string m_InteractionPrompt = "Interact";
+
+    [SerializeField] private float m_HoldDuration = 0f;
+
+    public string InteractionPrompt => m_InteractionPrompt;
+    public float HoldDuration => m_HoldDuration;
+
+    public virtual bool Interact(GameObject interactor)
     {
-        [SerializeField] private string m_InteractionPrompt = "Interact";
-
-        // NEW: Added this field so you can set it to "2.0" for the Chest
-        [SerializeField] private float m_HoldDuration = 0f;
-
-        public string InteractionPrompt => m_InteractionPrompt;
-
-        // NEW: Implementing the property required by the interface
-        public float HoldDuration => m_HoldDuration;
-
-        public virtual bool Interact(GameObject interactor)
-        {
-            Debug.Log($"Interacting with: {gameObject.name}");
-            return true;
-        }
+        Debug.Log($"Interacting with: {gameObject.name}");
+        return true;
     }
 }

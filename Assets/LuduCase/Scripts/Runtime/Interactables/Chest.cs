@@ -1,44 +1,67 @@
+using System.Collections;
 using UnityEngine;
 using InteractionSystem.Runtime.Core;
 
 namespace InteractionSystem.Runtime.Interactables
 {
-    public class Chest : InteractableBase
+    // Changed to ToggleInteractable to support Open/Close states
+    public class Chest : ToggleInteractable
     {
         #region Fields
 
-        [Header("Chest State")]
-        [SerializeField] private bool m_IsOpen = false;
-
         [Header("Visuals")]
-        [SerializeField] private Transform m_LidVisual; // Drag the "Lid" child here
-        [SerializeField] private Vector3 m_OpenRotation = new Vector3(-45, 0, 0);
+        [SerializeField] private Transform m_LidVisual; // Drag the "Lid_Hinge" here
+        [SerializeField] private Vector3 m_OpenRotation = new Vector3(-45, 0, 0); // Rotation when open
+        [SerializeField] private Vector3 m_ClosedRotation = Vector3.zero; // Rotation when closed
+
+        [Header("Animation")]
+        [SerializeField] private float m_AnimationDuration = 1.0f;
+
+        // Private Animation State
+        private Coroutine m_CurrentRoutine;
 
         #endregion
 
         #region Methods
 
-        public override bool Interact(GameObject interactor)
+        // Override logic to handle specific Chest messages
+        protected override void OnStateChanged(bool isOpen)
         {
-            // If already open, do nothing
-            if (m_IsOpen) return false;
+            // 1. Play Animation
+            if (m_CurrentRoutine != null) StopCoroutine(m_CurrentRoutine);
 
-            // Call base to log interaction
-            base.Interact(interactor);
+            Quaternion targetRot = Quaternion.Euler(isOpen ? m_OpenRotation : m_ClosedRotation);
+            m_CurrentRoutine = StartCoroutine(AnimateLid(targetRot));
 
-            m_IsOpen = true;
-            Debug.Log("<color=gold>Chest Opened!</color> Found: Gold Coin");
-
-            // Simple visual animation (Snap rotation)
-            if (m_LidVisual != null)
+            // 2. Update Prompt
+            if (isOpen)
             {
-                m_LidVisual.localRotation = Quaternion.Euler(m_OpenRotation);
+                Debug.Log("<color=gold>Chest Opened!</color>");
+                m_InteractionPrompt = "Hold E to Close";
+            }
+            else
+            {
+                Debug.Log("Chest Closed.");
+                m_InteractionPrompt = "Hold E to Open";
+            }
+        }
+
+        private IEnumerator AnimateLid(Quaternion target)
+        {
+            Quaternion start = m_LidVisual.localRotation;
+            float elapsed = 0f;
+
+            while (elapsed < m_AnimationDuration)
+            {
+                elapsed += Time.deltaTime;
+                float t = elapsed / m_AnimationDuration;
+                t = Mathf.SmoothStep(0f, 1f, t); // Smooth ease-in/out
+
+                m_LidVisual.localRotation = Quaternion.Slerp(start, target, t);
+                yield return null;
             }
 
-            // Optional: Disable collider or interaction so it can't be used again
-            // GetComponent<Collider>().enabled = false;
-
-            return true;
+            m_LidVisual.localRotation = target;
         }
 
         #endregion

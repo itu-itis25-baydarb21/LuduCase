@@ -9,6 +9,7 @@ namespace InteractionSystem.Runtime.Player
 
         [Header("Detection Settings")]
         [SerializeField] private float m_InteractionRange = 3.0f;
+        [SerializeField] private float m_DetectionRange = 10.0f;  // Can see (NEW)
         [SerializeField] private LayerMask m_InteractableLayer;
 
         [Header("References")]
@@ -42,27 +43,44 @@ namespace InteractionSystem.Runtime.Player
         {
             Ray ray = new Ray(m_PlayerCamera.transform.position, m_PlayerCamera.transform.forward);
 
-            // 1. Use the LayerMask again (Efficient)
-            if (Physics.Raycast(ray, out RaycastHit hitInfo, m_InteractionRange, m_InteractableLayer))
+            // 1. Raycast uses the LONGER detection range
+            if (Physics.Raycast(ray, out RaycastHit hitInfo, m_DetectionRange, m_InteractableLayer))
             {
-                // 2. Use GetComponentInParent to find script on P_Door_01 even if we hit the Cube child
                 IInteractable interactable = hitInfo.collider.GetComponentInParent<IInteractable>();
 
                 if (interactable != null)
                 {
                     m_CurrentInteractable = interactable;
 
-                    // Show UI
-                    if (m_UI != null) m_UI.ShowPrompt(interactable.InteractionPrompt);
+                    // 2. Check Distance
+                    float distance = hitInfo.distance;
+                    bool isOutOfRange = distance > m_InteractionRange;
+
+                    if (isOutOfRange)
+                    {
+                        // Case A: Too Far -> Show Warning
+                        string message = $"{interactable.InteractionPrompt} (Too Far)";
+                        if (m_UI != null) m_UI.ShowPrompt(message, true); // true = Warning Color
+
+                        // Prevent interaction by clearing current target locally for Input, 
+                        // OR handle it in HandleInput. 
+                        // Better approach: Keep m_CurrentInteractable but flag it as unusable.
+                        m_CurrentInteractable = null; // Disables input
+                    }
+                    else
+                    {
+                        // Case B: In Range -> Normal Prompt
+                        if (m_UI != null) m_UI.ShowPrompt(interactable.InteractionPrompt, false);
+                    }
+
                     return;
                 }
             }
 
-            // If we hit nothing interactable
-            if (m_CurrentInteractable != null)
+            // If nothing hit
+            if (m_CurrentInteractable != null || (m_UI != null)) // Reset everything
             {
                 m_CurrentInteractable = null;
-                // Hide UI
                 if (m_UI != null)
                 {
                     m_UI.HidePrompt();
