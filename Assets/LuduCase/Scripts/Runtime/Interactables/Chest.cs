@@ -37,12 +37,12 @@ namespace InteractionSystem.Runtime.Interactables
             if (isOpen)
             {
                 Debug.Log("<color=gold>Chest Opened!</color>");
-                m_InteractionPrompt = "Hold E to Close";
+                m_InteractionPrompt = "Hold {KEY} to Close";
             }
             else
             {
                 Debug.Log("Chest Closed.");
-                m_InteractionPrompt = "Hold E to Open";
+                m_InteractionPrompt = "Hold {KEY} to Open";
             }
         }
 

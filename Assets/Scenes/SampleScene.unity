@@ -1119,6 +1119,10 @@ PrefabInstance:
       propertyPath: m_UI
       value: 
       objectReference: {fileID: 735651807}
+    - target: {fileID: 4399177908722348302, guid: 1b6fbe0043670b04bbbcc38f6b720ad6, type: 3}
+      propertyPath: m_InteractionKey
+      value: 32
+      objectReference: {fileID: 0}
     - target: {fileID: 7146342098281859885, guid: 1b6fbe0043670b04bbbcc38f6b720ad6, type: 3}
       propertyPath: m_UI
       value: 

@@ -136,9 +136,8 @@ namespace InteractionSystem.Runtime.Interactables
 
         private void UpdatePrompt()
         {
-            // Change prompt text based on state
-            // If locked, the prompt will just say "Open", but interaction will fail and show the error message.
-            m_InteractionPrompt = m_IsActive ? "Press E to Close" : "Press E to Open";
+            // We use {KEY} placeholder so it adapts to whatever key the player selected
+            m_InteractionPrompt = m_IsActive ? "Press {KEY} to Close" : "Press {KEY} to Open";
         }
 
         #endregion

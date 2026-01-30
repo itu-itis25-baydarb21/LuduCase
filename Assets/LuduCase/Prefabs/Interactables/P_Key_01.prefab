@@ -118,6 +118,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d96dd15574745b84f911b1f0e6758f79, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_InteractionPrompt: Pick up Key
+  m_InteractionPrompt: Press E for Pick up the Key
   m_HoldDuration: 0
   m_ItemData: {fileID: 11400000, guid: 566d1d3b96b02874996d0d0d3708c626, type: 2}
+  m_Renderer: {fileID: 0}

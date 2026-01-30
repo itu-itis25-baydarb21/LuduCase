@@ -4,8 +4,7 @@ using UnityEngine;
 public abstract class InteractableBase : MonoBehaviour, IInteractable
 {
     // CHANGED: 'private' -> 'protected'
-    [SerializeField] protected string m_InteractionPrompt = "Interact";
-
+    protected string m_InteractionPrompt = "Press {KEY} to Interact";
     [SerializeField] private float m_HoldDuration = 0f;
 
     public string InteractionPrompt => m_InteractionPrompt;

@@ -1,5 +1,6 @@
 using UnityEngine;
 using InteractionSystem.Runtime.Core;
+using InteractionSystem.Runtime.UI;
 
 namespace InteractionSystem.Runtime.Player
 {
@@ -9,12 +10,17 @@ namespace InteractionSystem.Runtime.Player
 
         [Header("Detection Settings")]
         [SerializeField] private float m_InteractionRange = 3.0f;
-        [SerializeField] private float m_DetectionRange = 10.0f;  // Can see (NEW)
+        [SerializeField] private float m_DetectionRange = 10.0f;
         [SerializeField] private LayerMask m_InteractableLayer;
+
+        // NEW: Input Configuration
+        [Header("Input Settings")]
+        [Tooltip("The key used to interact with objects.")]
+        [SerializeField] private KeyCode m_InteractionKey = KeyCode.E;
 
         [Header("References")]
         [SerializeField] private Camera m_PlayerCamera;
-        [SerializeField] private InteractionSystem.Runtime.UI.InteractionUI m_UI;
+        [SerializeField] private InteractionUI m_UI;
 
         // Private State
         private IInteractable m_CurrentInteractable;
@@ -43,7 +49,6 @@ namespace InteractionSystem.Runtime.Player
         {
             Ray ray = new Ray(m_PlayerCamera.transform.position, m_PlayerCamera.transform.forward);
 
-            // 1. Raycast uses the LONGER detection range
             if (Physics.Raycast(ray, out RaycastHit hitInfo, m_DetectionRange, m_InteractableLayer))
             {
                 IInteractable interactable = hitInfo.collider.GetComponentInParent<IInteractable>();
@@ -52,33 +57,31 @@ namespace InteractionSystem.Runtime.Player
                 {
                     m_CurrentInteractable = interactable;
 
-                    // 2. Check Distance
                     float distance = hitInfo.distance;
                     bool isOutOfRange = distance > m_InteractionRange;
 
+                    // DYNAMIC TEXT FIX:
+                    // Replace the placeholder "{KEY}" with the actual key name (e.g. "E", "F", "Mouse0")
+                    string dynamicPrompt = interactable.InteractionPrompt.Replace("{KEY}", m_InteractionKey.ToString());
+
                     if (isOutOfRange)
                     {
-                        // Case A: Too Far -> Show Warning
-                        string message = $"{interactable.InteractionPrompt} (Too Far)";
-                        if (m_UI != null) m_UI.ShowPrompt(message, true); // true = Warning Color
-
-                        // Prevent interaction by clearing current target locally for Input, 
-                        // OR handle it in HandleInput. 
-                        // Better approach: Keep m_CurrentInteractable but flag it as unusable.
-                        m_CurrentInteractable = null; // Disables input
+                        // Case A: Too Far
+                        string message = $"{dynamicPrompt} (Too Far)";
+                        if (m_UI != null) m_UI.ShowPrompt(message, true); // Red Warning
+                        m_CurrentInteractable = null; // Disable input
                     }
                     else
                     {
-                        // Case B: In Range -> Normal Prompt
-                        if (m_UI != null) m_UI.ShowPrompt(interactable.InteractionPrompt, false);
+                        // Case B: In Range
+                        if (m_UI != null) m_UI.ShowPrompt(dynamicPrompt, false);
                     }
-
                     return;
                 }
             }
 
-            // If nothing hit
-            if (m_CurrentInteractable != null || (m_UI != null)) // Reset everything
+            // Reset if nothing hit
+            if (m_CurrentInteractable != null || (m_UI != null))
             {
                 m_CurrentInteractable = null;
                 if (m_UI != null)
@@ -96,11 +99,11 @@ namespace InteractionSystem.Runtime.Player
                 // HOLD INTERACTION
                 if (m_CurrentInteractable.HoldDuration > 0)
                 {
-                    if (Input.GetKey(KeyCode.E))
+                    // CHANGED: Input.GetKey(KeyCode.E) -> Input.GetKey(m_InteractionKey)
+                    if (Input.GetKey(m_InteractionKey))
                     {
                         m_CurrentHoldTime += Time.deltaTime;
 
-                        // Update Progress Bar
                         float progress = m_CurrentHoldTime / m_CurrentInteractable.HoldDuration;
                         if (m_UI != null) m_UI.UpdateProgress(progress);
 
@@ -120,7 +123,8 @@ namespace InteractionSystem.Runtime.Player
                 // INSTANT INTERACTION
                 else
                 {
-                    if (Input.GetKeyDown(KeyCode.E))
+                    // CHANGED: Input.GetKeyDown(KeyCode.E) -> Input.GetKeyDown(m_InteractionKey)
+                    if (Input.GetKeyDown(m_InteractionKey))
                     {
                         m_CurrentInteractable.Interact(gameObject);
                     }
