@@ -119,4 +119,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_InteractionPrompt: Pick up Key
-  m_KeyID: RedKey
+  m_HoldDuration: 0
+  m_ItemData: {fileID: 11400000, guid: 566d1d3b96b02874996d0d0d3708c626, type: 2}

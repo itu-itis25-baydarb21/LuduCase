@@ -1,53 +1,35 @@
 using System.Collections.Generic;
 using UnityEngine;
+using InteractionSystem.Runtime.Core;
+using InteractionSystem.Runtime.UI;
 
 namespace InteractionSystem.Runtime.Player
 {
-    /// <summary>
-    /// Manages the player's collected items (specifically keys).
-    /// </summary>
     public class Inventory : MonoBehaviour
     {
-        #region Fields
+        // We keep storing IDs for simplicity in logic checks
+        private List<string> m_CollectedKeyIDs = new List<string>();
 
-        // We use a List to store the IDs of collected keys
-        [SerializeField] private List<string> m_CollectedKeys = new List<string>();
-        [SerializeField] private InteractionSystem.Runtime.UI.InteractionUI m_UI;
+        [SerializeField] private InteractionUI m_UI;
 
-        #endregion
-
-        #region Methods
-
-        /// <summary>
-        /// Adds a key to the inventory.
-        /// </summary>
-        /// <param name="keyID">The unique ID of the key.</param>
-        public void AddKey(string keyID)
+        // CHANGED: Now accepts ItemData parameter
+        public void AddKey(ItemData itemData)
         {
-            if (!m_CollectedKeys.Contains(keyID))
-            {
-                m_CollectedKeys.Add(keyID);
-                Debug.Log($"<color=yellow>Inventory:</color> Added Key '{keyID}'");
+            if (itemData == null) return;
 
-                // NEW: Update the visual list
-                if (m_UI != null)
-                {
-                    m_UI.UpdateInventoryText(m_CollectedKeys);
-                }
+            if (!m_CollectedKeyIDs.Contains(itemData.ID))
+            {
+                m_CollectedKeyIDs.Add(itemData.ID);
+                Debug.Log($"<color=yellow>Inventory:</color> Added {itemData.DisplayName}");
+
+                // Update the UI
+                if (m_UI != null) m_UI.UpdateInventoryText(m_CollectedKeyIDs);
             }
         }
 
-        /// <summary>
-        /// Checks if the player possesses a specific key.
-        /// </summary>
-        /// <param name="keyID">The ID to check for.</param>
-        /// <returns>True if the key is in inventory.</returns>
         public bool HasKey(string keyID)
         {
-            return m_CollectedKeys.Contains(keyID);
+            return m_CollectedKeyIDs.Contains(keyID);
         }
-
-
-        #endregion
     }
 }

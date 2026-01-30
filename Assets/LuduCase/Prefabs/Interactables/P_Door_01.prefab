@@ -81,7 +81,7 @@ MonoBehaviour:
   m_HoldDuration: 0
   m_IsActive: 0
   m_IsLocked: 1
-  m_RequiredKeyID: RedKey
+  m_RequiredKey: {fileID: 11400000, guid: 566d1d3b96b02874996d0d0d3708c626, type: 2}
   m_DoorVisual: {fileID: 1332620627704877216}
   m_OpenRotation: {x: 0, y: 90, z: 0}
   m_ClosedRotation: {x: 0, y: 0, z: 0}

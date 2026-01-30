@@ -1,52 +1,39 @@
+using UnityEngine;
 using InteractionSystem.Runtime.Core;
 using InteractionSystem.Runtime.Player;
-using UnityEngine;
 
 namespace InteractionSystem.Runtime.Interactables
 {
-    /// <summary>
-    /// A specific interactable representing a key that can be picked up.
-    /// </summary>
-    public class KeyItem : InstantInteractable
+    public class KeyItem : InteractableBase
     {
-        #region Fields
+        [Header("Item Data")]
+        [SerializeField] private ItemData m_ItemData;
 
-        [Tooltip("The unique ID or name of this key (e.g., 'RedKey').")]
-        [SerializeField] private string m_KeyID = "GeneralKey";
+        [Header("Visuals")]
+        // Anahtarýn renk deðiþtirecek parçasý (Mesh Renderer)
+        [SerializeField] private Renderer m_Renderer;
 
-        #endregion
-
-        #region Properties
-
-        public string KeyID => m_KeyID;
-
-        #endregion
-
-        #region Methods
-
-        public override bool Interact(GameObject interactor)
+        private void Start()
         {
-            base.Interact(interactor);
-
-            // Try to find the Inventory on the player (interactor)
-            Inventory inventory = interactor.GetComponent<Inventory>();
-
-            if (inventory != null)
+            // Oyun baþladýðýnda rengi Data'dan alýp uygula
+            if (m_ItemData != null && m_Renderer != null)
             {
-                inventory.AddKey(m_KeyID);
-                Debug.Log($"Picked up key: {m_KeyID}");
-
-                // Disable object to verify pickup
-                gameObject.SetActive(false);
-                return true;
-            }
-            else
-            {
-                Debug.LogWarning("No Inventory component found on Interactor!");
-                return false;
+                m_Renderer.material.color = m_ItemData.TintColor;
             }
         }
 
-        #endregion
+        public override bool Interact(GameObject interactor)
+        {
+            if (m_ItemData == null) return false;
+
+            Inventory inventory = interactor.GetComponent<Inventory>();
+            if (inventory != null)
+            {
+                inventory.AddKey(m_ItemData);
+                gameObject.SetActive(false);
+                return true;
+            }
+            return false;
+        }
     }
 }
