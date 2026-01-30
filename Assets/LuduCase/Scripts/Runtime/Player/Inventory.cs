@@ -12,6 +12,7 @@ namespace InteractionSystem.Runtime.Player
 
         // We use a List to store the IDs of collected keys
         [SerializeField] private List<string> m_CollectedKeys = new List<string>();
+        [SerializeField] private InteractionSystem.Runtime.UI.InteractionUI m_UI;
 
         #endregion
 
@@ -27,6 +28,12 @@ namespace InteractionSystem.Runtime.Player
             {
                 m_CollectedKeys.Add(keyID);
                 Debug.Log($"<color=yellow>Inventory:</color> Added Key '{keyID}'");
+
+                // NEW: Update the visual list
+                if (m_UI != null)
+                {
+                    m_UI.UpdateInventoryText(m_CollectedKeys);
+                }
             }
         }
 
@@ -39,6 +46,7 @@ namespace InteractionSystem.Runtime.Player
         {
             return m_CollectedKeys.Contains(keyID);
         }
+
 
         #endregion
     }
