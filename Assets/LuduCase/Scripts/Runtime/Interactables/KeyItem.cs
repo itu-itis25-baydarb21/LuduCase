@@ -1,5 +1,6 @@
-using UnityEngine;
 using InteractionSystem.Runtime.Core;
+using InteractionSystem.Runtime.Player;
+using UnityEngine;
 
 namespace InteractionSystem.Runtime.Interactables
 {
@@ -25,16 +26,25 @@ namespace InteractionSystem.Runtime.Interactables
 
         public override bool Interact(GameObject interactor)
         {
-            // Call base to log the interaction
             base.Interact(interactor);
 
-            // TODO: In Phase 4.2, we will add this key to the Player's Inventory here.
-            Debug.Log($"Picked up key: {m_KeyID}");
+            // Try to find the Inventory on the player (interactor)
+            Inventory inventory = interactor.GetComponent<Inventory>();
 
-            // Disable or destroy the object to simulate pickup
-            gameObject.SetActive(false);
+            if (inventory != null)
+            {
+                inventory.AddKey(m_KeyID);
+                Debug.Log($"Picked up key: {m_KeyID}");
 
-            return true;
+                // Disable object to verify pickup
+                gameObject.SetActive(false);
+                return true;
+            }
+            else
+            {
+                Debug.LogWarning("No Inventory component found on Interactor!");
+                return false;
+            }
         }
 
         #endregion
