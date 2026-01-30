@@ -118,8 +118,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5799794c283a6848a1ca3814321f39b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_InteractionPrompt: Press E to Toggle Light
+  m_InteractionPrompt: Press {KEY} to Toggle Switch
   m_HoldDuration: 0
+  m_OutlineMaterial: {fileID: 2100000, guid: 4f7a174b5ec2cbc48b736dce0356b768, type: 2}
   m_IsActive: 0
   OnSwitchActivate:
     m_PersistentCalls:

@@ -15,11 +15,15 @@ namespace InteractionSystem.Runtime.Interactables
 
         private void Start()
         {
-            // Oyun baþladýðýnda rengi Data'dan alýp uygula
+            // 1. Rengi Deðiþtir
             if (m_ItemData != null && m_Renderer != null)
             {
                 m_Renderer.material.color = m_ItemData.TintColor;
             }
+
+            // 2. Base Class'a haber ver: "Yedeði güncelle, artýk ben Renkli bir objeyim"
+            // (InteractableBase'den miras aldýðýmýz için direkt çaðýrabiliriz)
+            RefreshMaterialBackup();
         }
 
         public override bool Interact(GameObject interactor)

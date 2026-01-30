@@ -9,11 +9,10 @@ namespace InteractionSystem.Runtime.Player
         #region Fields
 
         [Header("Detection Settings")]
-        [SerializeField] private float m_InteractionRange = 3.0f;
-        [SerializeField] private float m_DetectionRange = 10.0f;
+        [SerializeField] private float m_InteractionRange = 3.0f; // Etkileþim (Tuþa basma) mesafesi
+        [SerializeField] private float m_DetectionRange = 10.0f;  // Görme (Outline) mesafesi
         [SerializeField] private LayerMask m_InteractableLayer;
 
-        // NEW: Input Configuration
         [Header("Input Settings")]
         [Tooltip("The key used to interact with objects.")]
         [SerializeField] private KeyCode m_InteractionKey = KeyCode.E;
@@ -25,6 +24,9 @@ namespace InteractionSystem.Runtime.Player
         // Private State
         private IInteractable m_CurrentInteractable;
         private float m_CurrentHoldTime = 0f;
+
+        // YENÝ: Oyuncu objeye yeterince yakýn mý?
+        private bool m_IsInRange = false;
 
         #endregion
 
@@ -49,57 +51,62 @@ namespace InteractionSystem.Runtime.Player
         {
             Ray ray = new Ray(m_PlayerCamera.transform.position, m_PlayerCamera.transform.forward);
 
+            // Filtreli Raycast
             if (Physics.Raycast(ray, out RaycastHit hitInfo, m_DetectionRange, m_InteractableLayer))
             {
                 IInteractable interactable = hitInfo.collider.GetComponentInParent<IInteractable>();
 
                 if (interactable != null)
                 {
-                    m_CurrentInteractable = interactable;
+                    // 1. ODAKLANMA (Outline)
+                    if (m_CurrentInteractable != interactable)
+                    {
+                        if (m_CurrentInteractable != null) m_CurrentInteractable.OnLoseFocus();
 
+                        m_CurrentInteractable = interactable;
+                        m_CurrentInteractable.OnFocus();
+                    }
+
+                    // 2. MESAFE KONTROLÜ (WARNING ÇÖZÜMÜ BURADA)
                     float distance = hitInfo.distance;
-                    bool isOutOfRange = distance > m_InteractionRange;
+                    m_IsInRange = distance <= m_InteractionRange; // Menzil içinde miyiz?
 
-                    // DYNAMIC TEXT FIX:
-                    // Replace the placeholder "{KEY}" with the actual key name (e.g. "E", "F", "Mouse0")
+                    // 3. UI GÜNCELLEME
                     string dynamicPrompt = interactable.InteractionPrompt.Replace("{KEY}", m_InteractionKey.ToString());
 
-                    if (isOutOfRange)
+                    if (m_IsInRange)
                     {
-                        // Case A: Too Far
-                        string message = $"{dynamicPrompt} (Too Far)";
-                        if (m_UI != null) m_UI.ShowPrompt(message, true); // Red Warning
-                        m_CurrentInteractable = null; // Disable input
+                        // Menzildeyiz: Normal Beyaz Yazý
+                        if (m_UI != null) m_UI.ShowPrompt(dynamicPrompt, false);
                     }
                     else
                     {
-                        // Case B: In Range
-                        if (m_UI != null) m_UI.ShowPrompt(dynamicPrompt, false);
+                        // Uzaktayýz: Kýrmýzý "Too Far" uyarýsý
+                        if (m_UI != null) m_UI.ShowPrompt($"{dynamicPrompt} (Too Far)", true);
                     }
+
                     return;
                 }
             }
 
-            // Reset if nothing hit
-            if (m_CurrentInteractable != null || (m_UI != null))
+            // Hiçbir þeye bakmýyorsak temizle
+            if (m_CurrentInteractable != null)
             {
+                m_CurrentInteractable.OnLoseFocus();
                 m_CurrentInteractable = null;
-                if (m_UI != null)
-                {
-                    m_UI.HidePrompt();
-                    m_UI.UpdateProgress(0);
-                }
+                m_IsInRange = false; // Temizle
+                if (m_UI != null) m_UI.HidePrompt();
             }
         }
 
         private void HandleInput()
         {
-            if (m_CurrentInteractable != null)
+            // Input alabilmek için hem obje olmalý HEM DE menzilde (InRange) olmalýyýz
+            if (m_CurrentInteractable != null && m_IsInRange)
             {
                 // HOLD INTERACTION
                 if (m_CurrentInteractable.HoldDuration > 0)
                 {
-                    // CHANGED: Input.GetKey(KeyCode.E) -> Input.GetKey(m_InteractionKey)
                     if (Input.GetKey(m_InteractionKey))
                     {
                         m_CurrentHoldTime += Time.deltaTime;
@@ -123,7 +130,6 @@ namespace InteractionSystem.Runtime.Player
                 // INSTANT INTERACTION
                 else
                 {
-                    // CHANGED: Input.GetKeyDown(KeyCode.E) -> Input.GetKeyDown(m_InteractionKey)
                     if (Input.GetKeyDown(m_InteractionKey))
                     {
                         m_CurrentInteractable.Interact(gameObject);
@@ -132,6 +138,7 @@ namespace InteractionSystem.Runtime.Player
             }
             else
             {
+                // Menzilden çýkýnca hold süresini sýfýrla
                 m_CurrentHoldTime = 0;
                 if (m_UI != null) m_UI.UpdateProgress(0);
             }

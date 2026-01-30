@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1332620627704877216}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Hinge
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -77,12 +77,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d916b5a48d4379944a94141672f93650, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_InteractionPrompt: Press E for open the door
+  m_InteractionPrompt: Press {KEY} for Open the Door
   m_HoldDuration: 0
+  m_OutlineMaterial: {fileID: 2100000, guid: 4f7a174b5ec2cbc48b736dce0356b768, type: 2}
   m_IsActive: 0
   m_IsLocked: 1
   m_RequiredKey: {fileID: 11400000, guid: 566d1d3b96b02874996d0d0d3708c626, type: 2}
   m_DoorVisual: {fileID: 1332620627704877216}
+  m_DoorRenderer: {fileID: 0}
   m_OpenRotation: {x: 0, y: 90, z: 0}
   m_ClosedRotation: {x: 0, y: 0, z: 0}
   m_AnimationDuration: 1

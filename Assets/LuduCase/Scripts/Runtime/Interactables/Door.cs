@@ -40,14 +40,16 @@ namespace InteractionSystem.Runtime.Interactables
 
         private void Start()
         {
-            // Find the global UI manager
             m_UI = FindObjectOfType<InteractionUI>();
 
-            // If the door is locked and requires a specific key, tint the door color to match the key
+            // 1. Rengi Deðiþtir
             if (m_IsLocked && m_RequiredKey != null && m_DoorRenderer != null)
             {
                 m_DoorRenderer.material.color = m_RequiredKey.TintColor;
             }
+
+            // 2. Yedeði Güncelle (Kýrmýzý/Mavi hali kaydet)
+            RefreshMaterialBackup();
 
             UpdatePrompt();
         }
