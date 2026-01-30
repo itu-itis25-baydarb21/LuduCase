@@ -1,35 +1,49 @@
+using System; // Action için gerekli
 using System.Collections.Generic;
 using UnityEngine;
 using InteractionSystem.Runtime.Core;
-using InteractionSystem.Runtime.UI;
+// InteractionSystem.Runtime.UI'ý sildik! UI'ý tanýmýyoruz artýk.
 
 namespace InteractionSystem.Runtime.Player
 {
     public class Inventory : MonoBehaviour
     {
-        // We keep storing IDs for simplicity in logic checks
-        private List<string> m_CollectedKeyIDs = new List<string>();
+        private List<ItemData> m_CollectedItems = new List<ItemData>();
 
-        [SerializeField] private InteractionUI m_UI;
+        // EVENT TANIMI:
+        // "Bir eþya eklendiðinde bu olayý dinleyenlere haber ver"
+        // Action<ItemData> demek: Haber verirken yanýnda eklenen eþyayý da gönder demek.
+        public static event Action<ItemData> OnItemAdded;
 
-        // CHANGED: Now accepts ItemData parameter
         public void AddKey(ItemData itemData)
         {
             if (itemData == null) return;
 
-            if (!m_CollectedKeyIDs.Contains(itemData.ID))
+            // Zaten var mý kontrolü
+            bool alreadyHas = false;
+            foreach (var item in m_CollectedItems)
             {
-                m_CollectedKeyIDs.Add(itemData.ID);
+                if (item.ID == itemData.ID) alreadyHas = true;
+            }
+
+            if (!alreadyHas)
+            {
+                m_CollectedItems.Add(itemData);
                 Debug.Log($"<color=yellow>Inventory:</color> Added {itemData.DisplayName}");
 
-                // Update the UI
-                if (m_UI != null) m_UI.UpdateInventoryText(m_CollectedKeyIDs);
+                // UI'ý güncelle demiyoruz. Sadece "OLAY VAR!" diye baðýrýyoruz.
+                // ?.Invoke þu demek: Eðer dinleyen biri varsa çalýþtýr.
+                OnItemAdded?.Invoke(itemData);
             }
         }
 
         public bool HasKey(string keyID)
         {
-            return m_CollectedKeyIDs.Contains(keyID);
+            foreach (var item in m_CollectedItems)
+            {
+                if (item.ID == keyID) return true;
+            }
+            return false;
         }
     }
 }
