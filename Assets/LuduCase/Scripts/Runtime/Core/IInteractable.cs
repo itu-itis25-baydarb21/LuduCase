@@ -2,21 +2,14 @@ using UnityEngine;
 
 namespace InteractionSystem.Runtime.Core
 {
-    /// <summary>
-    /// Interface defining the contract for all objects that the player can interact with.
-    /// </summary>
     public interface IInteractable
     {
-        /// <summary>
-        /// Gets the prompt message to be displayed on the UI (e.g., "Press E to Open").
-        /// </summary>
+        // OLD: just the prompt
         string InteractionPrompt { get; }
 
-        /// <summary>
-        /// Executes the interaction logic.
-        /// </summary>
-        /// <param name="interactor">The GameObject performing the interaction (usually the player).</param>
-        /// <returns>True if interaction was successful.</returns>
+        // NEW: We added this line for the chest mechanic!
+        float HoldDuration { get; }
+
         bool Interact(GameObject interactor);
     }
 }

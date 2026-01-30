@@ -414,6 +414,58 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1875891030}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1319554885
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1319554887}
+  - component: {fileID: 1319554886}
+  m_Layer: 0
+  m_Name: P_Door_01
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1319554886
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1319554885}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d916b5a48d4379944a94141672f93650, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_InteractionPrompt: Interact
+  m_IsActive: 0
+  m_IsLocked: 0
+  m_RequiredKeyID: RedKey
+  m_DoorVisual: {fileID: 2097940232}
+  m_OpenRotation: {x: 0, y: 90, z: 0}
+  m_ClosedRotation: {x: 0, y: 0, z: 0}
+--- !u!4 &1319554887
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1319554885}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -1.3604128, y: -0.34872788, z: 10.2625065}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 2097940232}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1875891025
 GameObject:
   m_ObjectHideFlags: 0
@@ -696,12 +748,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2097940228}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.88, y: 0.1, z: 8.41}
-  m_LocalScale: {x: 2, y: 2, z: 2}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.48041284, y: 0.44872788, z: -4.7225065}
+  m_LocalScale: {x: 1, y: 2, z: 0.1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 1319554887}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &295420562806481050
 PrefabInstance:
@@ -768,4 +820,4 @@ SceneRoots:
   - {fileID: 1875891030}
   - {fileID: 295420562806481050}
   - {fileID: 337002868}
-  - {fileID: 2097940232}
+  - {fileID: 1319554887}
