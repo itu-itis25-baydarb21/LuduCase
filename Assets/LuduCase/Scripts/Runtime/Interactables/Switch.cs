@@ -21,7 +21,6 @@ namespace InteractionSystem.Runtime.Interactables
         #endregion
 
         #region Methods
-
         protected override void OnStateChanged(bool newState)
         {
             // Visual feedback (Rotate the switch handle, change color, etc.)

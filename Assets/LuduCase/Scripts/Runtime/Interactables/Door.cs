@@ -42,13 +42,11 @@ namespace InteractionSystem.Runtime.Interactables
         {
             m_UI = FindObjectOfType<InteractionUI>();
 
-            // 1. Rengi Deðiþtir
             if (m_IsLocked && m_RequiredKey != null && m_DoorRenderer != null)
             {
                 m_DoorRenderer.material.color = m_RequiredKey.TintColor;
             }
 
-            // 2. Yedeði Güncelle (Kýrmýzý/Mavi hali kaydet)
             RefreshMaterialBackup();
 
             UpdatePrompt();
@@ -99,7 +97,19 @@ namespace InteractionSystem.Runtime.Interactables
             // 2. Logic for Unlocked Door (Toggle Open/Close)
             return base.Interact(interactor);
         }
+        public void SetRemoteState(bool isOpen)
+        {
+            if (m_IsActive == isOpen) return;
 
+            m_IsActive = isOpen;
+
+            if (m_IsLocked && isOpen)
+            {
+                m_IsLocked = false;
+            }
+
+            OnStateChanged(isOpen);
+        }
         protected override void OnStateChanged(bool isOpen)
         {
             // Stop any existing animation to prevent conflict

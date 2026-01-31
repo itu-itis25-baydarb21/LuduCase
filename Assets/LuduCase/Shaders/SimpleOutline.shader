@@ -12,9 +12,9 @@ Shader "Custom/SimpleOutline"
         Pass
         {
             Name "OUTLINE"
-            Cull Front // Arka yüzleri çiz
+            Cull Front 
             ZWrite Off
-            ZTest LEqual // Derinlik testi
+            ZTest LEqual
             
             CGPROGRAM
             #pragma vertex vert
@@ -39,15 +39,11 @@ Shader "Custom/SimpleOutline"
             {
                 v2f o;
                 
-                // 1. Vertex'i önce Klip Alanýna (Clip Space) çevir
                 o.pos = UnityObjectToClipPos(v.vertex);
 
-                // 2. Normali de Klip alanýna çevir (Bu sayede çizgi hep ayný kalýnlýkta görünür)
                 float3 norm = mul((float3x3)UNITY_MATRIX_IT_MV, v.normal);
                 float2 offset = TransformViewToProjection(norm.xy);
 
-                // 3. Þiþirme iþlemini burada yap
-                // (Mesafeye göre bozulmayý önler)
                 o.pos.xy += offset * o.pos.z * _OutlineWidth;
 
                 return o;

@@ -70,11 +70,8 @@ namespace InteractionSystem.Runtime.UI
             Image img = newIconObj.GetComponent<Image>();
             if (img != null)
             {
-                // Resim varsa koy (Yoksa Unity'nin varsayýlan beyaz karesi kalýr)
                 if (item.Icon != null) img.sprite = item.Icon;
 
-                // --- BURASI EKSÝK OLABÝLÝR: RENGÝ DEÐÝÞTÝR ---
-                // Data'daki rengi (Kýrmýzý/Mavi) resmin rengine ata.
                 img.color = item.TintColor;
             }
 

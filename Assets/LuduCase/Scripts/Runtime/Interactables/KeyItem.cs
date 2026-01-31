@@ -10,19 +10,15 @@ namespace InteractionSystem.Runtime.Interactables
         [SerializeField] private ItemData m_ItemData;
 
         [Header("Visuals")]
-        // Anahtarýn renk deðiþtirecek parçasý (Mesh Renderer)
         [SerializeField] private Renderer m_Renderer;
 
         private void Start()
         {
-            // 1. Rengi Deðiþtir
             if (m_ItemData != null && m_Renderer != null)
             {
                 m_Renderer.material.color = m_ItemData.TintColor;
             }
 
-            // 2. Base Class'a haber ver: "Yedeði güncelle, artýk ben Renkli bir objeyim"
-            // (InteractableBase'den miras aldýðýmýz için direkt çaðýrabiliriz)
             RefreshMaterialBackup();
         }
 
