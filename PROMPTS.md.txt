@@ -1,0 +1,228 @@
+# LLM Kullanım Dokümantasyonu
+
+> Bu dosya, Unity Interaction System projesi geliştirme sürecinde LLM (Gemini) ile yapılan etkileşimleri belgelemektedir.
+
+## Özet
+
+| Bilgi | Değer |
+|-------|-------|
+| Toplam prompt sayısı | 15+ (Kritik olanlar listelendi) |
+| Kullanılan araçlar | Google Gemini |
+| En çok yardım alınan konular | UI Debugging (Layout/Image), Event System, Mimari (Decoupling), Refactoring |
+| Tahmini LLM ile kazanılan süre | 4-5 Saat |
+
+---
+
+## Prompt 1: Temel Mimari ve Yol Çıkarımı
+
+**Araç:** Google Gemini
+**Tarih/Saat:** 2026-01-31 18:10
+
+**Prompt:**
+"I am preparing a Unity game case study for my portfolio.
+
+
+
+Please review the attached Markdown document and provide a detailed development roadmap.
+
+Break the project into small, professional-level tasks suitable for frequent Git commits, following best software engineering practices.
+
+
+**Alınan Cevap (Özet):**
+UNITY INTERACTION SYSTEM ROADMAP - SHORT SUMMARY
+
+Purpose:
+Develop a professional interaction system in Unity within 12 hours
+with clean commits and organized project management.
+
+Important Rule:
+Before writing any code, keep PROMPTS.md open.
+Log every AI interaction immediately.
+
+--------------------------------------------------
+
+PHASE 1 - PROJECT SETUP (0 - 1 Hour)
+- Create Unity project (2022.3.x LTS)
+- Initialize Git repository
+- Add .gitignore
+- Create folder structure
+- Add Docs folder
+- Create IInteractable interface
+Goal: Establish project architecture
+
+--------------------------------------------------
+
+PHASE 2 - PLAYER & DETECTION (1 - 2.5 Hours)
+- Add First Person Controller
+- Create InteractionDetector
+- Implement Raycast detection
+- Detect IInteractable objects
+Goal: Enable interaction detection
+
+--------------------------------------------------
+
+PHASE 3 - BASE INTERACTION SYSTEM (2.5 - 4 Hours)
+- Create InteractableBase (abstract)
+- Implement Instant interaction
+- Implement Hold interaction
+- Implement Toggle interaction
+Goal: Build core interaction system
+
+--------------------------------------------------
+
+PHASE 4 - BASIC INTERACTABLE OBJECTS (4 - 5.5 Hours)
+- Create KeyItem
+- Create Inventory system
+- Create Switch with UnityEvent
+Goal: Add basic gameplay objects
+
+--------------------------------------------------
+
+PHASE 5 - ADVANCED INTERACTABLE OBJECTS (5.5 - 7 Hours)
+- Create Door system (locked/unlocked)
+- Create Chest system (hold-to-open)
+Goal: Implement advanced gameplay logic
+
+--------------------------------------------------
+
+PHASE 6 - UI FEEDBACK SYSTEM (7 - 9 Hours)
+- Create Interaction HUD
+- Add Prompt text
+- Add Progress bar
+- Create UI Manager
+- Connect InteractionDetector to UI
+- Add dynamic messages
+Goal: Provide visual feedback
+
+--------------------------------------------------
+
+PHASE 7 - TEST SCENE (9 - 10 Hours)
+- Create TestScene
+- Place Door, Key, Chest, Switch
+- Configure events and logic
+Goal: Build playable demo
+
+--------------------------------------------------
+
+PHASE 8 - CODE REVIEW & REFACTOR (10 - 11 Hours)
+- Apply Naming Conventions
+- Refactor scripts
+- Add XML documentation
+- Organize regions
+Goal: Meet professional coding standards
+
+--------------------------------------------------
+
+PHASE 9 - DOCUMENTATION & SUBMISSION (11 - 12 Hours)
+- Finalize PROMPTS.md
+- Complete README.md
+- Remove unused assets
+- Verify project structure
+Goal: Prepare for submission
+
+--------------------------------------------------
+
+PHASE 10 - BONUS (OPTIONAL)
+- Add simple animations to Door and Chest
+Goal: Improve project quality
+
+--------------------------------------------------
+
+FINAL GOAL:
+Deliver a clean, documented, professional Unity interaction system
+with structured commits and readable Git history.
+
+
+**Nasıl Kullandım:**
+- [x] Direkt kullandım
+- [ ] Adapte ettim
+- [ ] Reddettim
+
+**Açıklama:**
+> Temel roadmap çıkarıldı. Tahmini case süreleri belirlendi.
+---
+
+## Prompt 2: Envanter UI Görsel Hataları (White Rectangles)
+
+**Araç:** Google Gemini
+**Tarih/Saat:** 2026-01-31 02:40
+
+**Prompt:**
+"ekranın sol üstüne kaydı ama hala dümdüz beyaz dikdörtgenler var" (Devamında: "artık hiç bir şey gözükmüyor?" ve "Raw Image ekliyorum" detayları tartışıldı)
+
+
+**Alınan Cevap (Özet):**
+Sorunun Unity UI Layout Group ayarlarından (Child Force Expand) ve Prefab yapısından kaynaklandığı belirtildi. Daha sonra ikonların gri/şeffaf görünmesinin nedeninin, kodun 'Image' araması ancak benim prefab'ımda 'RawImage' kullanmam olduğu tespit edildi. Çözüm olarak RawImage bileşeninin silinip Image bileşeni eklenmesi önerildi.
+
+
+**Nasıl Kullandım:**
+- [ ] Direkt kullandım
+- [x] Adapte ettim (Sorun tespiti sonrası prefabı düzelttim)
+- [ ] Reddettim
+
+**Açıklama:**
+> Envanter ikonları ekranda bozuk görünüyordu. LLM önce Layout Group ayarlarını düzelttirdi, ardından "Raw Image" kullandığımı fark edince sorunun kodun `GetComponent<Image>()` satırı ile uyuşmamasından kaynaklandığını çözdü. Bu tespit saatlerce debugging yapmamı engelledi.
+
+---
+
+## Prompt 3: Switch Renk ve Outline Çakışması
+
+**Araç:** Google Gemini
+**Tarih/Saat:** 2026-01-31 03:00
+
+**Prompt:**
+"hala bir sıkıntımız var bir Switch'te diyelim kapalı ve kırmızı yaktıktan ve yeşil olduktan sonra bakmayı kestiğimizde rengi geri kırmızı oluyor"
+
+
+**Alınan Cevap (Özet):**
+Sorunun 'InteractableBase' sınıfındaki OnLoseFocus metodunun, nesnenin o anki mantıksal durumunu (Açık/Kapalı) kontrol etmeden eski materyali geri yüklemesinden kaynaklandığı açıklandı. Switch.cs içine 'OnLoseFocus' metodunu override eden ve duruma göre (IsOn) doğru materyali atayan düzeltilmiş kod verildi.
+
+
+**Nasıl Kullandım:**
+- [x] Direkt kullandım
+- [ ] Adapte ettim
+- [ ] Reddettim
+
+**Açıklama:**
+> Outline sistemi ve renk değiştirme mekaniği çakışıyordu. LLM'in verdiği `override` çözümü, nesneye bakmayı kestiğimde rengin doğru kalmasını sağladı.
+
+---
+
+## Prompt 4: Switch ve Kapı Bağlantısı (Remote Control)
+
+**Araç:** Google Gemini
+**Tarih/Saat:** 2026-01-31 03:10
+
+**Prompt:**
+"son yapmam gereken bir switch e basıldığında bir kapının açılmasını nasıl yaparım?" (Devamında: "using UnityEvent..." içeren kodu paylaştım)
+
+
+**Alınan Cevap (Özet):**
+Benim paylaştığım UnityEvent içeren Switch kodunun en profesyonel yaklaşım olduğu onaylandı. Door.cs içine sadece 'SetRemoteState' fonksiyonunun eklenmesi gerektiği söylendi. Böylece kodlar birbirine bağımlı olmadan (Decoupled) Inspector üzerinden sürükle-bırak ile bağlantı kuruldu.
+
+
+**Nasıl Kullandım:**
+- [x] Direkt kullandım (Mantığı onayladı, Door scriptine ekleme yaptık)
+- [ ] Adapte ettim
+- [ ] Reddettim
+
+**Açıklama:**
+> Switch'in kapıyı tanıması için hard-code yazmak yerine UnityEvent kullanma fikrimi doğruladı ve Kapı tarafındaki eksik fonksiyonu tamamladı.
+
+---
+
+
+## Genel Değerlendirme
+
+### LLM'in En Çok Yardımcı Olduğu Alanlar
+1. **Hata Ayıklama (Debugging):** Özellikle Unity UI sistemindeki `RawImage` vs `Image` gibi gözden kaçan detayları yakalamada çok etkiliydi.
+2. **Mimari Tavsiyeler:** Kodların birbirine bağımlılığını azaltmak (Decoupling) ve Interface kullanımı konusunda doğru yönlendirmeler yaptı.
+
+### LLM'in Yetersiz Kaldığı Alanlar
+1. **Bağlam (Context) Kaybı:** Bazen projedeki scriptlerin son halini unutup eski versiyona göre kod önerebildi (Örn: SaveManager silindikten sonra referans vermesi).
+2. **Spesifik Bileşen Tahmini:** Ben söyleyene kadar `RawImage` kullandığımı tahmin edemedi, standart `Image` üzerinden varsayım yaptı.
+
+### LLM Kullanımı Hakkında Düşüncelerim
+> Bu case boyunca LLM, bir "Senior Developer" gibi kod incelemesi yaparak hatalarımı fark etmemi sağladı. LLM olmasaydı özellikle UI ikonlarının görünmemesi sorununu çözmek için forumlarda çok daha fazla vakit harcayabilirdim. Gelecekte, scriptlerimin son halini LLM'e daha sık hatırlatarak bağlam kopukluğunu önlemeyi planlıyorum. Ayrıca temel bir roadmap çıkartıp parça parça ilerlememe yardım etti.
+
+---
